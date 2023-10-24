@@ -1,0 +1,13 @@
+.card{
+    cursor: pointer;
+    position: relative;
+}
+
+.close{
+    position: absolute;
+    right: 0;
+}
+
+.card:hover{
+    border: 2px solid green;
+}
