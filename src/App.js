@@ -6,49 +6,50 @@ import videoList from './assets/videosList';
 import './App.css';
 import { useEffect, useState } from 'react';
 import ModifyCard from './components/modifyCard/ModifyCard';
+import VideoSection from './components/videoSection/VideoSection';
 
 function App() {
   let [videos, setVideos] = useState([]);
+  let [editableVideo, setEditableVideo] = useState(null);
 
   useEffect(() =>
     setVideos(videoList)
   ,[]);
 
   function deleteVideo(id) {
-    setVideos(videos.filter(v => v.id !== id));
+    let newVideos = videos.filter(v => v.id !== id);
+    setVideos(newVideos);
+    if(editableVideo?.id === id)
+      handleReset();
   }
 
   function addVideo(video) {
-    let x = { ...video, id: videos.length + 1, imageLink: 'https://loremflickr.com/300/200/'}
-    let newVideo = [...videos, x]
+    let newVideo = [...videos, { ...video, id: videos.length + 1, imageLink: 'https://loremflickr.com/300/200/'}]
     setVideos(newVideo);
-    console.log('Added video');
-    console.log(x);
   }
 
+  
+  function handleEdit(id){
+    setEditableVideo(videos.find(v => v.id === id));
+  }
 
+  function editVideo(video){
+    let index = videos.findIndex(v => v.id === video.id);
+    let newVideo = [...videos]
+    newVideo.splice(index, 1, video);
+    setVideos(newVideo);
+    setEditableVideo(null); 
+  }
+
+  function handleReset(){
+    setEditableVideo(null);
+  }
 
   return (
     <div className="container">
       <div className='row justify-content-center'>
-        <ModifyCard modify={false} addVideo={addVideo} />
-        {
-          videos.map(video =>
-            <div className="col-md-auto" key={video.id} style={{ 'margin': '10px' }}>
-              <Video
-                id={video.id}
-                title={video.title}
-                imageLink={video.imageLink}
-                views={video.views}
-                viewsParam={video.viewsParam}
-                channelName={video.channelName}
-                verified={video.verified}
-                deleteVideo={deleteVideo}
-                addVideo={addVideo}
-              />
-            </div>
-          )
-        }
+        <ModifyCard modify={false} addVideo={addVideo} editableVideo={editableVideo} editVideo={editVideo} handleReset={handleReset} />
+        <VideoSection videos={videos} deleteVideo={deleteVideo} handleEdit={handleEdit} />
       </div>
     </div>
   );

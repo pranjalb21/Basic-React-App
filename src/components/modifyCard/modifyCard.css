@@ -1,6 +1,9 @@
 .checkbox{
     align-self: flex-end;
 }
+.viewsParam{
+    align-self: flex-end;
+}
 .save{
     display: flex;
     justify-content: center;
@@ -11,8 +14,9 @@ form{
     margin: 1%;
 }
 .save .btn{
-    width: 50%;
+    width: 40%;
     font-weight: bold;
+    margin: 1%
 }
 
 .save .btn:hover{

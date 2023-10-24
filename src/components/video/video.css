@@ -6,6 +6,19 @@
 .close{
     position: absolute;
     right: 0;
+    background-color: rgb(247, 224, 224);
+    opacity: 0.8;
+}
+
+.edit{
+    position: absolute;
+    background-color: rgb(247, 224, 224);
+    opacity: 0.8;
+}
+
+.card .btn:hover{
+    background-color: rgb(235, 196, 196);
+    opacity: 1;
 }
 
 .card:hover{

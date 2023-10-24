@@ -1,31 +1,57 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './modifyCard.css';
 
-function ModifyCard({ modify, addVideo }) {
-    let [video, setVideo] = useState({
+
+function ModifyCard({ addVideo, editableVideo, editVideo, handleReset }) {
+    const initialVideoTemplate = {
         title: '',
         channelName: '',
         verified: false,
         views: '',
         viewsParam: ''
-    })
-
-    function handleChange(e){
-        let newVideo = {...video, [e.target.id] : e.target.id==='verified'?e.target.checked : e.target.value};
-        setVideo(newVideo);
-        console.log(e.target.id==='verified'?e.target.checked : e.target.value);
     }
-    
+
+    let [video, setVideo] = useState(initialVideoTemplate);
+
+    useEffect(() => {
+        if (editableVideo){
+            setVideo(editableVideo);
+        }
+
+    }, [editableVideo])
+
+    function handleChange(e) {
+        let newVideo = { ...video, [e.target.id]: e.target.id === 'verified' ? e.target.checked : e.target.value };
+        setVideo(newVideo);
+    }
+
+    function handleSubmit(e) {
+        e.preventDefault();
+        if(editableVideo)
+            editVideo(video)
+        else
+            addVideo(video);
+        setVideo(initialVideoTemplate);
+        
+    }
+
+    function reset(e){
+        e.preventDefault();
+        setVideo(initialVideoTemplate);
+        handleReset();
+    }
+
+
     return (
         <div>
             <form>
                 <div className='form-group'>
-                    <h3>{modify?'Update Video':'Add New Video'}</h3>
+                    <h3>{editableVideo ? 'Update Video' : 'Add New Video'}</h3>
                     <hr />
                 </div>
                 <div className='form-group'>
                     <label htmlFor='title'>Video Name</label>
-                    <input className='form-control'  type='text' id='title' value={video.title} onChange={handleChange} />
+                    <input className='form-control' type='text' id='title' value={video.title} onChange={handleChange} />
                 </div>
                 <div className='form-group'>
                     <div className='row'>
@@ -36,7 +62,7 @@ function ModifyCard({ modify, addVideo }) {
                         <div className='col checkbox'>
                             <div className='form-check '>
                                 <label className='form-check-label' htmlFor='verified'>Verified</label>
-                                <input className='form-check-input' checked={video.verified}  type='checkbox' id='verified' onChange={handleChange} />
+                                <input className='form-check-input' checked={video.verified} type='checkbox' id='verified' onChange={handleChange} />
                             </div>
                         </div>
                     </div>
@@ -48,9 +74,9 @@ function ModifyCard({ modify, addVideo }) {
                             <label className='form-check-label' htmlFor='views'>Views&nbsp;</label>
                             <input className='form-check-number' value={video.views} type='number' min={0} max={999} id='views' onChange={handleChange} />
                         </div>
-                        <div className='col'>
+                        <div className='col viewsParam'>
                             <label className='form-check-label' htmlFor='viewsParam'>Number&nbsp;</label>
-                            <select className='form-check-select' id='viewsParam' value={video.viewsParam}  onChange={handleChange}>
+                            <select className='form-check-select' id='viewsParam' value={video.viewsParam} onChange={handleChange}>
                                 <option value=''></option>
                                 <option value='K'>K</option>
                                 <option value='M'>M</option>
@@ -61,7 +87,8 @@ function ModifyCard({ modify, addVideo }) {
                 </div>
                 <br />
                 <div className='form-group save'>
-                    <button type='submit' className='btn btn-success'>{modify?'Save changes': 'Add'}</button>
+                    <button type='submit' className='btn btn-secondary' onClick={reset}>Reset</button>
+                    <button type='submit' className='btn btn-success' onClick={handleSubmit}>{editableVideo ? 'Save changes' : 'Add'}</button>
                 </div>
             </form>
         </div>
